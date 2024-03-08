@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "button.hpp"
+#include "words/hash.hpp"
 const int Width = 1280, Height = 720;
 int n = SDL_Init(SDL_INIT_EVERYTHING);
 SDL_Window *win = SDL_CreateWindow("Hello SDL World", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED_MASK, Width, Height, SDL_WINDOW_SHOWN);
