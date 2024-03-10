@@ -12,6 +12,7 @@ public:
     std::string getTiles(int needed);
 
 private:
-    std::string available_letters = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXYYZ";
-    Hash t;
+    // add blank tiles
+    std::string available_letters = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXYYZ..";
+    Hash *t = new Hash;
 };

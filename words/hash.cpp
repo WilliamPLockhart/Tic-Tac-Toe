@@ -41,6 +41,7 @@ int Hash::HashFunc2(std::string word)
         // 1307
         hashValue = (hashValue * 1307 + ch) % table_size;
     }
+    // perhaps remove
     return (hashValue == 0) ? 1 : hashValue;
 }
 
