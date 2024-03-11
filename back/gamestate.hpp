@@ -13,6 +13,7 @@ public:
     static SDL_Window *win;
     static SDL_Renderer *ren;
     SDL_Texture *backgroundTexture;
+    SDL_Texture *tileTexture;
     Gamestate();
     virtual ~Gamestate();
 };
@@ -25,4 +26,6 @@ public:
     void enter();
     void update();
     void exit();
+    void loadBoardTiles();
+    int pos(int xORy);
 };
