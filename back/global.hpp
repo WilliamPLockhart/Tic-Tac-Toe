@@ -3,10 +3,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
+#include <windows.h>
+
 static bool running = 1;
 static int windowWidth = 1280;
 static int windowHeight = 980;
 static int k = SDL_Init(SDL_INIT_EVERYTHING);
+static SDL_Surface *icon;
 
 // for loading tiles and board
 static SDL_Rect tilePlace;

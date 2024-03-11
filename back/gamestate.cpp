@@ -101,6 +101,8 @@ void Menu::loadBoardTiles()
 
 Menu::Menu()
 {
+    icon = SDL_LoadBMP("assets/Icon_scrabble.bmp");
+    SDL_SetWindowIcon(win, icon);
     // board
     backgroundTexture = IMG_LoadTexture(ren, "assets/Scrabble_Board.jpg");
     if (!backgroundTexture)
@@ -110,21 +112,21 @@ Menu::Menu()
 
     tilePlace = {textureWidth, 0, windowWidth - textureWidth, textureHeight};
     // tiles
-    tilesVector.push_back({startingPos, startingPos, "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(1), pos(0), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(2), pos(1), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(3), pos(2), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(4), pos(3), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(5), pos(4), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(6), pos(5), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(7), pos(0), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(8), pos(1), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(9), pos(2), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(10), pos(3), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(11), pos(4), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(12), pos(5), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(13), pos(4), "assets/Scrabble_Tile_Blank.jpg"});
-    tilesVector.push_back({pos(14), pos(5), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(0), pos(0), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(1), pos(1), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(2), pos(2), "assets/Scrabble_Tile_S.jpg"});
+    tilesVector.push_back({pos(3), pos(3), "assets/Scrabble_Tile_C.jpg"});
+    tilesVector.push_back({pos(4), pos(4), "assets/Scrabble_Tile_R.jpg"});
+    tilesVector.push_back({pos(5), pos(5), "assets/Scrabble_Tile_A.jpg"});
+    tilesVector.push_back({pos(6), pos(6), "assets/Scrabble_Tile_B.jpg"});
+    tilesVector.push_back({pos(7), pos(7), "assets/Scrabble_Tile_B.jpg"});
+    tilesVector.push_back({pos(8), pos(8), "assets/Scrabble_Tile_L.jpg"});
+    tilesVector.push_back({pos(9), pos(9), "assets/Scrabble_Tile_E.jpg"});
+    tilesVector.push_back({pos(10), pos(10), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(11), pos(11), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(12), pos(12), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(13), pos(13), "assets/Scrabble_Tile_Blank.jpg"});
+    tilesVector.push_back({pos(14), pos(14), "assets/Scrabble_Tile_Blank.jpg"});
 }
 
 Menu::~Menu()
@@ -134,7 +136,12 @@ Menu::~Menu()
 // will return the value for where the tile should be placed
 int Menu::pos(int xORy)
 {
-    int value = blockDif * xORy + (xORy - 1);
+    int offset = 1;
+    if (xORy > 7)
+        offset++;
+    if (xORy > 13)
+        offset++;
+    int value = blockDif * xORy + (xORy - offset);
     if (value > 0)
     {
         return startingPos + value;
