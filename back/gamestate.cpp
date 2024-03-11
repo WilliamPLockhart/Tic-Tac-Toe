@@ -52,13 +52,17 @@ void Menu::update()
             }
         }
         auto key = SDL_GetKeyboardState(NULL);
-        if (key[SDL_SCANCODE_ESCAPE])
+        if (SDL_KEYDOWN)
         {
-            shutdown();
+            if (key[SDL_SCANCODE_ESCAPE])
+            {
+                shutdown();
+            }
         }
+
         SDL_RenderClear(ren);
-        // use null because the bacground should stretch the entire screen
-        SDL_RenderCopy(ren, backgroundTexture, NULL, NULL);
+        // use null to so that the bacground should stretch the entire screen is an option
+        SDL_RenderCopy(ren, backgroundTexture, &backgroundRect, NULL);
         SDL_RenderPresent(ren);
     }
     // end main loop
@@ -74,6 +78,8 @@ Menu::Menu()
     backgroundTexture = IMG_LoadTexture(ren, "assets/Scrabble_Board.jpg");
     if (!backgroundTexture)
         std::cout << "error loading background " << SDL_GetError() << std::endl;
+    SDL_QueryTexture(backgroundTexture, NULL, NULL, &textureWidth, &textureHeight);
+    backgroundRect = {0, 0, textureWidth, textureHeight};
 }
 
 Menu::~Menu()
