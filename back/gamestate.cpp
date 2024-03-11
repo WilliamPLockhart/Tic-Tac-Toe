@@ -108,7 +108,7 @@ Menu::Menu()
     SDL_QueryTexture(backgroundTexture, NULL, NULL, &textureWidth, &textureHeight);
     backgroundRect = {0, 0, textureWidth, textureHeight};
 
-    tilePlace = {1280 - 300, 0, 300, textureHeight};
+    tilePlace = {textureWidth, 0, windowWidth - textureWidth, textureHeight};
     // tiles
     tilesVector.push_back({startingPos, startingPos, "assets/Scrabble_Tile_Blank.jpg"});
     tilesVector.push_back({pos(1), pos(0), "assets/Scrabble_Tile_Blank.jpg"});
