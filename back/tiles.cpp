@@ -4,11 +4,11 @@ tiles::tiles()
 {
 }
 
-std::string tiles::getTiles(int needed)
+std::string tiles::getTiles(int needed, bool infinite)
 {
     std::string value;
     // makes sure that needed is not greater than the available letters
-    if (needed > available_letters.size())
+    if (needed > available_letters.size() && infinite == false)
     {
         needed = available_letters.size();
     }
@@ -22,7 +22,10 @@ std::string tiles::getTiles(int needed)
         int randomInt = distribution(gen);
         // adds the letter to the string and removes from list
         value += available_letters.at(randomInt);
-        available_letters.erase(available_letters.begin() + randomInt);
+        if (infinite == false)
+        {
+            available_letters.erase(available_letters.begin() + randomInt);
+        }
     }
     return value;
 }

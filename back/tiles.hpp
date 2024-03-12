@@ -2,17 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-#include "hash.hpp"
 
 class tiles
 {
 public:
     tiles();
-    ~tiles();
-    std::string getTiles(int needed);
+    std::string getTiles(int needed, bool infinite = false);
 
 private:
     // add blank tiles
     std::string available_letters = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXYYZ..";
-    Hash *t = new Hash;
 };
