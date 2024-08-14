@@ -1,7 +1,28 @@
-all: main
+# Directories
+SRC_DIR = src
+BACK_DIR = back
+BIN_DIR = bin
 
-main:
-	g++ -I src/include -L src/lib -o run main.cpp back/gamestate.cpp back/hash.cpp back/tiles.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+# Compiler and flags
+CC = g++
+CFLAGS = -I $(SRC_DIR)/include -L $(SRC_DIR)/lib
+LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
+# Output target
+TARGET = $(BIN_DIR)/run.exe
+
+# Source files
+SRCS = main.cpp $(BACK_DIR)/gamestate.cpp $(BACK_DIR)/hash.cpp $(BACK_DIR)/tiles.cpp
+
+# Build target
+all: $(TARGET)
+
+$(TARGET): $(SRCS)
+	$(CC) $(CFLAGS) -o $@ $(SRCS) $(LDFLAGS)
+
+# Clean up
 clean:
-	rm -f main
+	rm -f $(TARGET)
+
+# Phony targets
+.PHONY: all clean
