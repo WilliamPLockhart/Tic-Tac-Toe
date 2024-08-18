@@ -1,156 +1,78 @@
 #include "gamestate.hpp"
 
-SDL_Window *Gamestate::win = SDL_CreateWindow("hello scrabble world", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
-SDL_Renderer *Gamestate::ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+SDL_Window *Gamestate::win = nullptr;
+SDL_Renderer *Gamestate::ren = nullptr;
+bool Gamestate::running = false;
 
 Gamestate::Gamestate()
 {
+}
 
-    icon = SDL_LoadBMP("assets/Icon_scrabble.bmp");
-    SDL_SetWindowIcon(win, icon);
-    // board
-    backgroundTexture = IMG_LoadTexture(ren, "assets/Scrabble_Board.jpg");
-    if (!backgroundTexture)
-        std::cout << "error loading background " << SDL_GetError() << std::endl;
-    SDL_QueryTexture(backgroundTexture, NULL, NULL, &textureWidth, &textureHeight);
-    // this assumes window height is always smaller than window width.
-    if (textureHeight > windowHeight)
+// creates window
+void Gamestate::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
+{
+    int flags = 0;
+    if (fullscreen)
     {
-        textureHeight = windowHeight;
-        textureWidth = windowHeight;
-        ratio = windowHeight / 980.0;
-        tileWidth *= ratio;
+        flags = SDL_WINDOW_FULLSCREEN;
     }
-    // loads for Gamestate
-    replaceTiles(15);
 
-    // this is for the board
-    backgroundRect = {0, 0, textureWidth, textureHeight};
-    // this is the green place for new tiles
-    tilePlace = {textureWidth, 0, windowWidth - textureWidth, textureHeight};
+    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+    {
+        std::cout << "Subsytems Initialized!.." << std::endl;
+        win = SDL_CreateWindow("Hello SDL", xpos, ypos, width, height, flags);
+        if (win)
+        {
+            std::cout << "Window Created!..." << std::endl;
+        }
+        ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+        if (ren)
+        {
+            std::cout << "Renderer Created!..." << std::endl;
+        }
+        running = true;
+    }
 }
 
-Gamestate::~Gamestate()
+void Gamestate::Update()
 {
 }
 
-void Gamestate::shutdown()
+void Gamestate::render()
 {
-    running = 0;
+    SDL_SetRenderDrawColor(ren, 10, 10, 100, 255);
+    SDL_RenderClear(ren);
+    SDL_RenderPresent(ren);
+}
+
+void Gamestate::cleanGame()
+{
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();
+    running = false;
 }
 
-void Gamestate::update()
+void Gamestate::handleEvents()
 {
-    // main loop
-    while (running)
+    while (SDL_PollEvent(&e))
     {
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
+        switch (e.type)
         {
-            switch (e.type)
+        case SDL_QUIT:
+            running = false;
+            break;
+
+        case SDL_KEYUP:
+        {
+            if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
             {
-            case SDL_QUIT:
-            {
-                shutdown();
+                running = false;
                 break;
             }
-            case SDL_WINDOWEVENT:
-            {
-                if (e.window.event == SDL_WINDOWEVENT_RESIZED)
-                {
-                    /* to do*/
-                }
-            }
-            }
         }
-        auto key = SDL_GetKeyboardState(NULL);
-        if (SDL_KEYDOWN)
-        {
-            if (key[SDL_SCANCODE_ESCAPE])
-            {
-                shutdown();
-            }
+        default:
+            break;
         }
-
-        SDL_RenderClear(ren);
-        // use null to so that the bacground should stretch the entire screen is an option
-        SDL_RenderCopy(ren, backgroundTexture, NULL, &backgroundRect);
-        // draws green border
-        SDL_SetRenderDrawColor(ren, 42, 140, 68, 255);
-        SDL_RenderFillRect(ren, &tilePlace);
-        // draws tiles
-        loadBoardTiles();
-        SDL_RenderPresent(ren);
-
-        // 60fps
-        SDL_Delay(60 / 1000);
-    }
-    // end main loop
-}
-
-void Gamestate::loadBoardTiles()
-{
-    // loading each tile that is already placed
-    tileInfo *T = new tileInfo;
-    for (int i = 0; i < tilesVector.size(); i++)
-    {
-        *T = tilesVector.at(i);
-        tileTexture = IMG_LoadTexture(ren, T->tileType.c_str());
-        // error message if tile cant render while game is runnig
-        if (!tileTexture && running == 1)
-        {
-            std::cout << "error loading tileTexture " << SDL_GetError() << std::endl;
-            tilesVector.erase(tilesVector.begin() + i);
-        }
-
-        tileRect = {T->xPos, T->yPos, tileWidth, tileWidth};
-        SDL_RenderCopy(ren, tileTexture, NULL, &tileRect);
-        // free memory up
-        SDL_DestroyTexture(tileTexture);
-    }
-    delete T;
-}
-
-// will return the value for where the tile should be placed
-int Gamestate::pos(int xORy)
-{
-    int offset = 1;
-    if (xORy > 7)
-        offset++;
-    if (xORy > 13)
-        offset++;
-    int value = blockDif * xORy + (xORy - offset);
-    if (value > 0)
-    {
-        return (startingPos + value) * ratio;
-    }
-    return startingPos * ratio;
-}
-
-void Gamestate::replaceTiles(int needed)
-{
-    // tiles
-    std::string letters = T.getTiles(15);
-    if (needed != letters.size())
-    {
-        bagEmpty = true;
-    }
-    for (int i = 0; i < needed; i++)
-    {
-        std::string location = "assets/Scrabble_Tile_";
-        if (letters[i] == '.')
-        {
-
-            location += "Blank";
-        }
-        else
-        {
-            location += letters[i];
-        }
-        location += ".jpg";
-        tilesVector.push_back({pos(i), pos(i), location});
     }
 }
