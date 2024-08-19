@@ -49,7 +49,6 @@ void Gamestate::render()
 {
     // background
     SDL_SetRenderDrawColor(ren, 10, 10, 100, 255);
-    SDL_RenderClear(ren);
     entityManager.renderEntities(ren);
     SDL_RenderPresent(ren);
 }
@@ -94,39 +93,29 @@ void Gamestate::handleEvents()
         case SDL_KEYDOWN:
         {
             auto key = SDL_GetKeyboardState(NULL);
-
-            if (key[SDL_SCANCODE_D])
+            // allows WASD
+            if (key[SDL_SCANCODE_D] || key[SDL_SCANCODE_A] || key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S])
             {
-                entityManager.moveEntity('D');
-            }
-            else if (key[SDL_SCANCODE_A])
-            {
-                entityManager.moveEntity('A');
-            }
-            else if (key[SDL_SCANCODE_W])
-            {
-                entityManager.moveEntity('W');
-            }
-            else if (key[SDL_SCANCODE_S])
-            {
-                entityManager.moveEntity('S');
+                bool left = key[SDL_SCANCODE_A];
+                bool right = key[SDL_SCANCODE_D];
+                bool up = key[SDL_SCANCODE_W];
+                bool down = key[SDL_SCANCODE_S];
+                entityManager.moveEntity(left, right, up, down, entityID);
             }
             break;
         }
         case SDL_MOUSEBUTTONDOWN:
         {
-            // checks if the user is clicking on the img, should eventually check if any img is being pressed
+            // checks if the user is clicking on the img
             if (e.button.button == SDL_BUTTON_LEFT)
             {
-                SDL_Rect playerRect = entityManager.getPlayerRect();
-                int playerRectX = playerRect.x;
-                int playerRectY = playerRect.y;
 
                 SDL_GetMouseState(&mouseX, &mouseY);
-                if (((mouseX >= playerRectX) && (mouseX <= playerRectX + playerRect.w)) && (mouseY >= playerRectY && mouseY <= playerRectY + playerRect.h))
+                SDL_Rect *playerRect = entityManager.getNearestRect(mouseX, mouseY, entityID);
+                if (playerRect)
                 {
-                    offsetX = mouseX - playerRectX;
-                    offsetY = mouseY - playerRectY;
+                    offsetX = mouseX - playerRect->x;
+                    offsetY = mouseY - playerRect->y;
                     dragging = true;
                 }
             }
@@ -144,19 +133,19 @@ void Gamestate::handleEvents()
         {
             if (dragging)
             {
-                SDL_Rect playerRect = entityManager.getPlayerRect();
+                SDL_Rect playerRect = entityManager.getRectByID(entityID);
                 SDL_GetMouseState(&mouseX, &mouseY);
                 SDL_Rect temp = {mouseX - offsetX, mouseY - offsetY, playerRect.w, playerRect.h};
-                entityManager.setPlayerRect(temp);
+                entityManager.setPlayerRect(temp, entityID);
             }
         }
-
         default:
             break;
         }
     }
 }
 
+// sets the game Icon based on the fileLocation given
 void Gamestate::setIcon(const char *fileLocation)
 {
     icon = SDL_LoadBMP(fileLocation);
