@@ -1,5 +1,6 @@
 #include "gamestate.hpp"
 
+SDL_Surface *Gamestate::icon = nullptr;
 SDL_Window *Gamestate::win = nullptr;
 SDL_Renderer *Gamestate::ren = nullptr;
 bool Gamestate::running = false;
@@ -11,6 +12,7 @@ Gamestate::Gamestate()
 // creates window
 void Gamestate::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
+    // initializes screensize, window, and renderer
     int flags = 0;
     if (fullscreen)
     {
@@ -32,6 +34,10 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
         }
         running = true;
     }
+    // sets icon
+    const char *file = "assets/logo.bmp";
+    setIcon(file);
+    // adds first entity
     entityManager.addEntity(ren, "assets/AmongUSRed.png", {100, 100, 300, 400});
 }
 
@@ -48,6 +54,7 @@ void Gamestate::render()
     SDL_RenderPresent(ren);
 }
 
+// destroys renderer
 void Gamestate::cleanGame()
 {
     SDL_DestroyRenderer(ren);
@@ -57,6 +64,7 @@ void Gamestate::cleanGame()
     running = false;
 }
 
+// takes game inputs
 void Gamestate::handleEvents()
 {
     while (SDL_PollEvent(&e))
@@ -146,5 +154,18 @@ void Gamestate::handleEvents()
         default:
             break;
         }
+    }
+}
+
+void Gamestate::setIcon(const char *fileLocation)
+{
+    icon = SDL_LoadBMP(fileLocation);
+    if (!icon)
+    {
+        std::cout << "icon failed to load" << std::endl;
+    }
+    else
+    {
+        SDL_SetWindowIcon(win, icon);
     }
 }

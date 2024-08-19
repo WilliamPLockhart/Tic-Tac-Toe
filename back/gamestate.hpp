@@ -11,6 +11,8 @@ public:
     void render();
     void cleanGame();
     bool isRunning() { return running; }
+    static SDL_Surface *icon;
+    void setIcon(const char *fileLocation);
 
 private:
     static SDL_Window *win;
