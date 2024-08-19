@@ -69,9 +69,17 @@ void Gamestate::handleEvents()
 
         case SDL_KEYUP:
         {
-            if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+            auto key = e.key.keysym.scancode;
+            if (key == SDL_SCANCODE_ESCAPE)
             {
                 running = false;
+                break;
+            }
+            else if (key == SDL_SCANCODE_P)
+            {
+                SDL_Rect tempRect = {100, 100, 100, 100};
+                const char *fileLocation = "assets/AmongUSEggHat.png";
+                entityManager.addEntity(ren, fileLocation, tempRect);
                 break;
             }
         }
@@ -81,25 +89,25 @@ void Gamestate::handleEvents()
 
             if (key[SDL_SCANCODE_D])
             {
-                entityManager.movePlayerEntity('D');
+                entityManager.moveEntity('D');
             }
             else if (key[SDL_SCANCODE_A])
             {
-                entityManager.movePlayerEntity('A');
+                entityManager.moveEntity('A');
             }
             else if (key[SDL_SCANCODE_W])
             {
-                entityManager.movePlayerEntity('W');
+                entityManager.moveEntity('W');
             }
             else if (key[SDL_SCANCODE_S])
             {
-                entityManager.movePlayerEntity('S');
+                entityManager.moveEntity('S');
             }
             break;
         }
         case SDL_MOUSEBUTTONDOWN:
         {
-            // checks if the user is clicking on the img
+            // checks if the user is clicking on the img, should eventually check if any img is being pressed
             if (e.button.button == SDL_BUTTON_LEFT)
             {
                 SDL_Rect playerRect = entityManager.getPlayerRect();
@@ -131,7 +139,6 @@ void Gamestate::handleEvents()
                 SDL_Rect playerRect = entityManager.getPlayerRect();
                 SDL_GetMouseState(&mouseX, &mouseY);
                 SDL_Rect temp = {mouseX - offsetX, mouseY - offsetY, playerRect.w, playerRect.h};
-
                 entityManager.setPlayerRect(temp);
             }
         }

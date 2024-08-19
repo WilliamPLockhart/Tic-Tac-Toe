@@ -1,7 +1,7 @@
 #include "Entity.hpp"
 
 // creates playerText
-bool Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0})
+bool Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect)
 {
     EntityInfo E;
     SDL_Surface *tempSurface = IMG_Load(fileLocation);
@@ -11,33 +11,36 @@ bool Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rec
     E.id = EntityList.size() - 1;
     EntityList.push_back(E);
     SDL_FreeSurface(tempSurface);
-    if (EntityList.size() == 1)
-    {
-        playerRect = rect;
-    }
 }
 
 // moves the playerEntity based on direction
-void Entity::movePlayerEntity(char direction)
+void Entity::moveEntity(char direction, int id)
 {
-    if ('D')
+    // avoid out of bounds
+    if (id < 0 || id >= EntityList.size())
     {
-        EntityList.at(0).entityRect.x += 10;
+        std::cout << "moveEntity Out Of Bounds!..." << std::endl;
+        return;
     }
-    else if ('A')
+    if (direction == 'D')
     {
-        EntityList.at(0).entityRect.x -= 10;
+        EntityList.at(id).entityRect.x += 10;
     }
-    else if ('W')
+    else if (direction == 'A')
     {
-        EntityList.at(0).entityRect.y -= 10;
+        EntityList.at(id).entityRect.x -= 10;
     }
-    else if ('S')
+    else if (direction == 'W')
     {
-        EntityList.at(0).entityRect.y += 10;
+        EntityList.at(id).entityRect.y -= 10;
+    }
+    else if (direction == 'S')
+    {
+        EntityList.at(id).entityRect.y += 10;
     }
 }
 
+// clears memory and renders each entity
 void Entity::renderEntities(SDL_Renderer *ren)
 {
     SDL_RenderClear(ren);

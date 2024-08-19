@@ -21,4 +21,5 @@ private:
     SDL_Event e;
     bool dragging = false;
     int mouseX, mouseY, offsetY, offsetX;
+    int entityID = 0;
 };
