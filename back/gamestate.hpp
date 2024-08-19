@@ -16,5 +16,9 @@ private:
     static SDL_Window *win;
     static SDL_Renderer *ren;
     static bool running;
+    Entity entityManager;
+    // inputs
     SDL_Event e;
+    bool dragging = false;
+    int mouseX, mouseY, offsetY, offsetX;
 };

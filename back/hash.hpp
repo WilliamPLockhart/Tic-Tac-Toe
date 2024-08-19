@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
-#define table_size 214433
+constexpr int table_size = 214433;
 class Hash
 {
 private:
