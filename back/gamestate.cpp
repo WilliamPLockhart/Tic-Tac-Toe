@@ -130,7 +130,7 @@ void Gamestate::handleEvents()
             {
                 SDL_Rect playerRect = entityManager.getPlayerRect();
                 SDL_GetMouseState(&mouseX, &mouseY);
-                SDL_Rect temp = {playerRect.x, playerRect.y, mouseX - offsetX, mouseY - offsetY};
+                SDL_Rect temp = {mouseX - offsetX, mouseY - offsetY, playerRect.w, playerRect.h};
 
                 entityManager.setPlayerRect(temp);
             }
