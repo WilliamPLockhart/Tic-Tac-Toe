@@ -59,7 +59,6 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
     const char *file = "assets/logo.bmp";
     setIcon(file);
     // adds first entity
-    entityManager.addEntity(ren, "assets/AmongUSRed.png", {100, 100, 300, 400});
 }
 
 // handles game logic
@@ -132,7 +131,7 @@ void Gamestate::handleEvents()
             }
             else if (key == SDL_SCANCODE_P)
             {
-                SDL_Rect tempRect = {600, 100, 240, 240};
+                SDL_Rect tempRect = {700, 8, 240, 240};
                 const char *fileLocation = "";
                 entityManager.addEntity(ren, fileLocation, tempRect, 1);
                 break;

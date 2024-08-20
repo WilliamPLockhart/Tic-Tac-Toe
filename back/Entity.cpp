@@ -15,6 +15,7 @@ void Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rec
         else
         {
             tempSurface = IMG_Load("assets/O.png");
+            rect.x += 340;
             turn = X;
         }
         if (!tempSurface)
