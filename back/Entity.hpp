@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <iostream>
 
 struct EntityInfo
 {
@@ -23,7 +22,7 @@ public:
         X = 1,
         O = 0
     };
-    void addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0}, bool turns = 0);
+    void addEntity(SDL_Renderer *ren, SDL_Rect rect = {0, 0, 0, 0});
 
     void renderEntities(SDL_Renderer *ren);
 
@@ -32,6 +31,8 @@ public:
     void setPlayerRect(SDL_Rect rect, int ID);
     turnType getTurn() { return turn; }
     void playAudio(const char *fileLocation);
+    void SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int &y, turnType board[3][3], SDL_Renderer *ren);
+    void setTurn(int t);
 
 private:
     std::vector<EntityInfo> EntityList;

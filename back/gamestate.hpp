@@ -1,5 +1,8 @@
 #pragma once
 #include "Entity.hpp"
+#include <cstdlib>
+#include <ctime>
+
 class Gamestate
 {
 public:
@@ -14,6 +17,7 @@ public:
     void setIcon(const char *fileLocation);
     static int windowWidth;
     static int windowHeight;
+    bool startRandom();
 
 private:
     static Entity::turnType board[3][3];

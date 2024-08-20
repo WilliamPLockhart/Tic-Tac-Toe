@@ -13,6 +13,13 @@ Gamestate::Gamestate()
 {
     int length = windowHeight / 3;
     tile = {0, 0, length, length};
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            board[i][j] = Entity::turnType::empty;
+        }
+    }
 }
 
 // creates window
@@ -59,6 +66,8 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
     const char *file = "assets/logo.bmp";
     setIcon(file);
     // adds first entity
+    entityManager.setTurn(startRandom());
+    entityManager.addEntity(ren, {700, 8, 240, 240});
 }
 
 // handles game logic
@@ -129,13 +138,6 @@ void Gamestate::handleEvents()
                 running = false;
                 break;
             }
-            else if (key == SDL_SCANCODE_P)
-            {
-                SDL_Rect tempRect = {700, 8, 240, 240};
-                const char *fileLocation = "";
-                entityManager.addEntity(ren, fileLocation, tempRect, 1);
-                break;
-            }
         }
         case SDL_MOUSEBUTTONDOWN:
         {
@@ -159,6 +161,12 @@ void Gamestate::handleEvents()
             if (e.button.button == SDL_BUTTON_LEFT)
             {
                 dragging = false;
+                int newX, newY;
+                entityManager.SnapToGrid(mouseX, mouseY, tile, newX, newY, board, ren);
+                SDL_Rect playerRect = entityManager.getRectByID(entityID);
+                playerRect.x = newX;
+                playerRect.y = newY;
+                entityManager.setPlayerRect(playerRect, entityID);
             }
             break;
         }
@@ -190,4 +198,11 @@ void Gamestate::setIcon(const char *fileLocation)
     {
         SDL_SetWindowIcon(win, icon);
     }
+}
+
+bool Gamestate::startRandom()
+{
+    std::srand(std::time(0));
+    int randomNumber = std::rand() % 2;
+    return randomNumber;
 }
