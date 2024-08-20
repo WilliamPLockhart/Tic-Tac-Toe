@@ -7,10 +7,11 @@ SDL_Surface *Gamestate::icon = nullptr;
 SDL_Window *Gamestate::win = nullptr;
 SDL_Renderer *Gamestate::ren = nullptr;
 bool Gamestate::running = false;
+Entity::turnType Gamestate::board[3][3] = {Entity::turnType::empty};
 
 Gamestate::Gamestate()
 {
-    int length = 720 / 3;
+    int length = windowHeight / 3;
     tile = {0, 0, length, length};
 }
 
@@ -137,18 +138,6 @@ void Gamestate::handleEvents()
                 break;
             }
         }
-        // not needed anymore
-        //  case SDL_KEYDOWN:
-        //  {
-        //      auto key = SDL_GetKeyboardState(NULL);
-        //      // allows WASD
-        //      if (key[SDL_SCANCODE_D] || key[SDL_SCANCODE_A] || key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S])
-        //      {
-        //          bool left = key[SDL_SCANCODE_A], right = key[SDL_SCANCODE_D], up = key[SDL_SCANCODE_W], down = key[SDL_SCANCODE_S];
-        //          entityManager.moveEntity(left, right, up, down, entityID);
-        //      }
-        //      break;
-        //  }
         case SDL_MOUSEBUTTONDOWN:
         {
             // checks if the user is clicking on the img

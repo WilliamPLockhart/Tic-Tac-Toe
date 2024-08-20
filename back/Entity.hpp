@@ -19,11 +19,12 @@ class Entity
 public:
     enum turnType
     {
+        empty = 2,
         X = 1,
         O = 0
     };
-    bool addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0}, bool turns = 0);
-    void moveEntity(bool left, bool right, bool up, bool down, int id = 0);
+    void addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0}, bool turns = 0);
+
     void renderEntities(SDL_Renderer *ren);
 
     SDL_Rect *getNearestRect(int mouseX, int mouseY, int &ID);
@@ -31,7 +32,6 @@ public:
     void setPlayerRect(SDL_Rect rect, int ID);
     turnType getTurn() { return turn; }
     void playAudio(const char *fileLocation);
-    
 
 private:
     std::vector<EntityInfo> EntityList;

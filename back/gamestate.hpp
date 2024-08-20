@@ -16,6 +16,7 @@ public:
     static int windowHeight;
 
 private:
+    static Entity::turnType board[3][3];
     static SDL_Window *win;
     static SDL_Renderer *ren;
     static bool running;
