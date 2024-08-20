@@ -16,14 +16,21 @@ struct EntityInfo
 class Entity
 {
 public:
-    bool addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0});
+    enum turnType
+    {
+        X = 1,
+        O = 0
+    };
+    bool addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect = {0, 0, 0, 0}, bool turns = 0);
     void moveEntity(bool left, bool right, bool up, bool down, int id = 0);
     void renderEntities(SDL_Renderer *ren);
 
     SDL_Rect *getNearestRect(int mouseX, int mouseY, int &ID);
     SDL_Rect getRectByID(int ID);
     void setPlayerRect(SDL_Rect rect, int ID);
+    turnType getTurn() { return turn; }
 
 private:
     std::vector<EntityInfo> EntityList;
+    turnType turn = X;
 };

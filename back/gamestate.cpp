@@ -1,5 +1,6 @@
 #include "gamestate.hpp"
 
+SDL_Rect tile;
 SDL_Surface *Gamestate::icon = nullptr;
 SDL_Window *Gamestate::win = nullptr;
 SDL_Renderer *Gamestate::ren = nullptr;
@@ -7,6 +8,8 @@ bool Gamestate::running = false;
 
 Gamestate::Gamestate()
 {
+    int length = 720 / 3;
+    tile = {0, 0, length, length};
 }
 
 // creates window
@@ -41,14 +44,39 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
     entityManager.addEntity(ren, "assets/AmongUSRed.png", {100, 100, 300, 400});
 }
 
+// handles game logic
 void Gamestate::Update()
 {
 }
 
+// renders background and entities
 void Gamestate::render()
 {
-    // background
     SDL_SetRenderDrawColor(ren, 10, 10, 100, 255);
+    SDL_RenderClear(ren);
+    bool color = 0;
+    int width = tile.w, height = tile.h;
+
+    for (int i = 0; i < 3; i++)
+    {
+
+        for (int y = 0; y < 3; y++)
+        {
+            tile.x = y * width;
+            tile.y = i * height;
+            // renders 3 by 3
+            if (color)
+            {
+                SDL_SetRenderDrawColor(ren, 203, 188, 129, 255);
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(ren, 94, 89, 71, 255);
+            }
+            color = !color;
+            SDL_RenderFillRect(ren, &tile);
+        }
+    }
     entityManager.renderEntities(ren);
     SDL_RenderPresent(ren);
 }
@@ -84,9 +112,9 @@ void Gamestate::handleEvents()
             }
             else if (key == SDL_SCANCODE_P)
             {
-                SDL_Rect tempRect = {100, 100, 100, 100};
-                const char *fileLocation = "assets/AmongUSEggHat.png";
-                entityManager.addEntity(ren, fileLocation, tempRect);
+                SDL_Rect tempRect = {600, 100, 240, 240};
+                const char *fileLocation = "";
+                entityManager.addEntity(ren, fileLocation, tempRect, 1);
                 break;
             }
         }
@@ -96,10 +124,7 @@ void Gamestate::handleEvents()
             // allows WASD
             if (key[SDL_SCANCODE_D] || key[SDL_SCANCODE_A] || key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S])
             {
-                bool left = key[SDL_SCANCODE_A];
-                bool right = key[SDL_SCANCODE_D];
-                bool up = key[SDL_SCANCODE_W];
-                bool down = key[SDL_SCANCODE_S];
+                bool left = key[SDL_SCANCODE_A], right = key[SDL_SCANCODE_D], up = key[SDL_SCANCODE_W], down = key[SDL_SCANCODE_S];
                 entityManager.moveEntity(left, right, up, down, entityID);
             }
             break;

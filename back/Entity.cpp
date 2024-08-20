@@ -1,10 +1,32 @@
 #include "Entity.hpp"
 
 // creates playerText
-bool Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect)
+bool Entity::addEntity(SDL_Renderer *ren, const char *fileLocation, SDL_Rect rect, bool turns)
 {
     EntityInfo E;
-    SDL_Surface *tempSurface = IMG_Load(fileLocation);
+    SDL_Surface *tempSurface;
+    if (turns)
+    {
+        if (turn == X)
+        {
+            tempSurface = IMG_Load("assets/X.png");
+            turn = O;
+        }
+        else
+        {
+            tempSurface = IMG_Load("assets/O.png");
+            turn = X;
+        }
+        if (!tempSurface)
+        {
+            std::cout << "failure" << std::endl;
+        }
+    }
+    else
+    {
+        tempSurface = IMG_Load(fileLocation);
+    }
+
     SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, tempSurface);
     E.entityTexture = tex;
     E.entityRect = rect;
@@ -43,13 +65,16 @@ void Entity::moveEntity(bool left, bool right, bool up, bool down, int id)
 // clears memory and renders each entity
 void Entity::renderEntities(SDL_Renderer *ren)
 {
-    SDL_RenderClear(ren);
     for (auto E : EntityList)
     {
         SDL_RenderCopy(ren, E.entityTexture, NULL, &E.entityRect);
     }
 }
 
+/*
+todo:
+    change ID method, so that it is quadrant based
+*/
 SDL_Rect *Entity::getNearestRect(int mouseX, int mouseY, int &ID)
 {
     for (auto E : EntityList)
@@ -68,6 +93,7 @@ SDL_Rect *Entity::getNearestRect(int mouseX, int mouseY, int &ID)
     return nullptr;
 }
 
+// returns SDL_Rect by ID
 SDL_Rect Entity::getRectByID(int ID)
 {
     if (ID >= 0 && ID < EntityList.size())
@@ -79,7 +105,6 @@ SDL_Rect Entity::getRectByID(int ID)
 // problem function
 void Entity::setPlayerRect(SDL_Rect rect, int ID)
 {
-    std::cout << "setPLayerRect entityID: " << ID << std::endl;
     if (EntityList.size() > ID && ID >= 0)
         EntityList.at(ID).entityRect = rect;
 }
