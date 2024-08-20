@@ -31,6 +31,7 @@ public:
     void setPlayerRect(SDL_Rect rect, int ID);
     turnType getTurn() { return turn; }
     void playAudio(const char *fileLocation);
+    
 
 private:
     std::vector<EntityInfo> EntityList;

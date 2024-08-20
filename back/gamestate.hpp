@@ -1,6 +1,5 @@
 #pragma once
-#include "global.hpp"
-
+#include "Entity.hpp"
 class Gamestate
 {
 public:
@@ -13,6 +12,8 @@ public:
     bool isRunning() { return running; }
     static SDL_Surface *icon;
     void setIcon(const char *fileLocation);
+    static int windowWidth;
+    static int windowHeight;
 
 private:
     static SDL_Window *win;

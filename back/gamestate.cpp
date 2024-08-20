@@ -1,5 +1,7 @@
 #include "gamestate.hpp"
 
+int Gamestate::windowWidth = 1280;
+int Gamestate::windowHeight = 720;
 SDL_Rect tile;
 SDL_Surface *Gamestate::icon = nullptr;
 SDL_Window *Gamestate::win = nullptr;
@@ -135,17 +137,18 @@ void Gamestate::handleEvents()
                 break;
             }
         }
-        case SDL_KEYDOWN:
-        {
-            auto key = SDL_GetKeyboardState(NULL);
-            // allows WASD
-            if (key[SDL_SCANCODE_D] || key[SDL_SCANCODE_A] || key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S])
-            {
-                bool left = key[SDL_SCANCODE_A], right = key[SDL_SCANCODE_D], up = key[SDL_SCANCODE_W], down = key[SDL_SCANCODE_S];
-                entityManager.moveEntity(left, right, up, down, entityID);
-            }
-            break;
-        }
+        // not needed anymore
+        //  case SDL_KEYDOWN:
+        //  {
+        //      auto key = SDL_GetKeyboardState(NULL);
+        //      // allows WASD
+        //      if (key[SDL_SCANCODE_D] || key[SDL_SCANCODE_A] || key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S])
+        //      {
+        //          bool left = key[SDL_SCANCODE_A], right = key[SDL_SCANCODE_D], up = key[SDL_SCANCODE_W], down = key[SDL_SCANCODE_S];
+        //          entityManager.moveEntity(left, right, up, down, entityID);
+        //      }
+        //      break;
+        //  }
         case SDL_MOUSEBUTTONDOWN:
         {
             // checks if the user is clicking on the img
