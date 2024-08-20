@@ -37,6 +37,21 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
         }
         running = true;
     }
+
+    // audio
+    if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0)
+    {
+        std::cout << "Failed to initialize SDL2_mixer: " << Mix_GetError() << std::endl;
+        running = false;
+        return;
+    }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        std::cout << "Failed to open audio: " << Mix_GetError() << std::endl;
+        running = false;
+        return;
+    }
+
     // sets icon
     const char *file = "assets/logo.bmp";
     setIcon(file);
@@ -84,6 +99,8 @@ void Gamestate::render()
 // destroys renderer
 void Gamestate::cleanGame()
 {
+    Mix_CloseAudio();
+    Mix_Quit();
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();

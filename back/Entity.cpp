@@ -106,5 +106,20 @@ SDL_Rect Entity::getRectByID(int ID)
 void Entity::setPlayerRect(SDL_Rect rect, int ID)
 {
     if (EntityList.size() > ID && ID >= 0)
+    {
         EntityList.at(ID).entityRect = rect;
+        playAudio("assets/placePiece.mp3");
+    }
+}
+
+void Entity::playAudio(const char *fileLocation)
+{
+    auto music = Mix_LoadMUS("assets/placePiece.mp3");
+    if (Mix_PlayingMusic() == 0)
+    {
+        if (Mix_PlayMusic(music, 0) == -1)
+        {
+            std::cerr << "Error playing music: " << Mix_GetError() << std::endl;
+        }
+    }
 }

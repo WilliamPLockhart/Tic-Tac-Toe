@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -29,6 +30,7 @@ public:
     SDL_Rect getRectByID(int ID);
     void setPlayerRect(SDL_Rect rect, int ID);
     turnType getTurn() { return turn; }
+    void playAudio(const char *fileLocation);
 
 private:
     std::vector<EntityInfo> EntityList;

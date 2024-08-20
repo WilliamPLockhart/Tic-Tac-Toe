@@ -6,7 +6,7 @@ BIN_DIR = bin
 # Compiler and flags
 CC = g++
 CFLAGS = -I $(SRC_DIR)/include -L $(SRC_DIR)/lib
-LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
 
 # Output target
 TARGET = $(BIN_DIR)/run.exe
