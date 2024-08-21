@@ -136,7 +136,7 @@ void Entity::lockEntities(int ID)
     }
 }
 
-// for the first player
+//  for the first player
 void Entity::setTurn(int t)
 {
     if (t)
