@@ -1,5 +1,6 @@
 #include "gamestate.hpp"
 
+Entity::turnType Gamestate::gameWon = Entity::turnType::empty;
 int Gamestate::windowWidth = 1280;
 int Gamestate::windowHeight = 720;
 SDL_Rect tile;
@@ -73,6 +74,14 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
 // handles game logic
 void Gamestate::Update()
 {
+    if (playerO == 15)
+    {
+        gameWon = Entity::O;
+    }
+    else if (playerX == 15)
+    {
+        gameWon = Entity::X;
+    }
 }
 
 // renders background and entities
@@ -170,7 +179,8 @@ void Gamestate::handleEvents()
                 entityManager.setPlayerRect(playerRect, entityID);
                 if (lock)
                 {
-                    entityManager.lockEntities(entityID);
+                    entityManager.lockEntities(entityID, playerX, playerO);
+                    // entityManager.
                 }
             }
             break;

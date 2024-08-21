@@ -43,10 +43,7 @@ void Entity::renderEntities(SDL_Renderer *ren)
     }
 }
 
-/*
-todo:
-    change ID method, so that it is quadrant based
-*/
+//finds nearers to grid to snap to
 SDL_Rect *Entity::getNearestRect(int mouseX, int mouseY, int &ID)
 {
     for (auto E : EntityList)
@@ -100,8 +97,8 @@ void Entity::playAudio(const char *fileLocation)
 // snaps to available location, locks entity from being moved again
 bool Entity::SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int &y, turnType board[3][3], SDL_Renderer *ren)
 {
-    int gridX = positionX / tile.w;
-    int gridY = positionY / tile.h;
+    gridX = positionX / tile.w;
+    gridY = positionY / tile.h;
     int newPositionX = gridX * tile.w;
     int newPositionY = gridY * tile.h;
 
@@ -125,7 +122,7 @@ bool Entity::SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int
 }
 
 // prevents tile from being moved if it has been played
-void Entity::lockEntities(int ID)
+void Entity::lockEntities(int ID, int &playerX, int &playerO)
 {
     if (ID >= 0 && ID < EntityList.size())
     {
@@ -133,6 +130,14 @@ void Entity::lockEntities(int ID)
         EntityList.at(ID).entityRect = {};
         EntityList.at(ID).entityTexture = nullptr;
         EntityList.at(ID).id = -1;
+    }
+    if (turn == O)
+    {
+        playerO += pointBoard[gridY][gridX];
+    }
+    else if (turn == X)
+    {
+        playerX += pointBoard[gridY][gridX];
     }
 }
 

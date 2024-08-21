@@ -31,10 +31,13 @@ public:
     void playAudio(const char *fileLocation);
     bool SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int &y, turnType board[3][3], SDL_Renderer *ren);
     void setTurn(int t);
-    void lockEntities(int ID);
+    void lockEntities(int ID, int &playerX, int &playerO);
+    int addPoints();
 
 private:
     std::vector<EntityInfo> lockedEntityList;
     std::vector<EntityInfo> EntityList;
     turnType turn = X;
+    int pointBoard[3][3] = {{4, 9, 2}, {3, 5, 7}, {8, 1, 6}};
+    int gridX, gridY;
 };

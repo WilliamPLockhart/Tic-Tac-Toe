@@ -20,7 +20,7 @@ public:
     bool startRandom();
 
 private:
-    static Entity::turnType board[3][3];
+    static Entity::turnType gameWon;
     static SDL_Window *win;
     static SDL_Renderer *ren;
     static bool running;
@@ -29,5 +29,10 @@ private:
     SDL_Event e;
     bool dragging = false;
     int mouseX, mouseY, offsetY, offsetX;
+
+    // player and entities
     int entityID = 0;
+    int playerX = 0;
+    int playerO = 0;
+    static Entity::turnType board[3][3];
 };
