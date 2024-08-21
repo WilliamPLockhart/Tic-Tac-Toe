@@ -162,11 +162,16 @@ void Gamestate::handleEvents()
             {
                 dragging = false;
                 int newX, newY;
-                entityManager.SnapToGrid(mouseX, mouseY, tile, newX, newY, board, ren);
+                bool lock = false;
+                lock = entityManager.SnapToGrid(mouseX, mouseY, tile, newX, newY, board, ren);
                 SDL_Rect playerRect = entityManager.getRectByID(entityID);
                 playerRect.x = newX;
                 playerRect.y = newY;
                 entityManager.setPlayerRect(playerRect, entityID);
+                if (lock)
+                {
+                    entityManager.lockEntities(entityID);
+                }
             }
             break;
         }

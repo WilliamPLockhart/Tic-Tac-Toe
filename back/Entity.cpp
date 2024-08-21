@@ -37,6 +37,10 @@ void Entity::renderEntities(SDL_Renderer *ren)
     {
         SDL_RenderCopy(ren, E.entityTexture, NULL, &E.entityRect);
     }
+    for (auto E : lockedEntityList)
+    {
+        SDL_RenderCopy(ren, E.entityTexture, NULL, &E.entityRect);
+    }
 }
 
 /*
@@ -80,6 +84,7 @@ void Entity::setPlayerRect(SDL_Rect rect, int ID)
     }
 }
 
+// plays audio file based on fileLocation
 void Entity::playAudio(const char *fileLocation)
 {
     auto music = Mix_LoadMUS("assets/placePiece.mp3");
@@ -92,9 +97,9 @@ void Entity::playAudio(const char *fileLocation)
     }
 }
 
-void Entity::SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int &y, turnType board[3][3], SDL_Renderer *ren)
+// snaps to available location, locks entity from being moved again
+bool Entity::SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int &y, turnType board[3][3], SDL_Renderer *ren)
 {
-
     int gridX = positionX / tile.w;
     int gridY = positionY / tile.h;
     int newPositionX = gridX * tile.w;
@@ -109,14 +114,29 @@ void Entity::SnapToGrid(int positionX, int positionY, SDL_Rect tile, int &x, int
         board[gridX][gridY] = turn;
         SDL_Rect tempRect = {700, 8, 240, 240};
         addEntity(ren, tempRect);
+        return 1;
     }
     else
     {
         x = 870;
         y = 8;
+        return 0;
     }
 }
 
+// prevents tile from being moved if it has been played
+void Entity::lockEntities(int ID)
+{
+    if (ID >= 0 && ID < EntityList.size())
+    {
+        lockedEntityList.push_back(EntityList.at(ID));
+        EntityList.at(ID).entityRect = {};
+        EntityList.at(ID).entityTexture = nullptr;
+        EntityList.at(ID).id = -1;
+    }
+}
+
+// for the first player
 void Entity::setTurn(int t)
 {
     if (t)
