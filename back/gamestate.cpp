@@ -92,6 +92,7 @@ void Gamestate::render()
     bool color = 0;
     int width = tile.w, height = tile.h;
 
+    // renders 3 by 3
     for (int i = 0; i < 3; i++)
     {
 
@@ -99,7 +100,7 @@ void Gamestate::render()
         {
             tile.x = y * width;
             tile.y = i * height;
-            // renders 3 by 3
+
             if (color)
             {
                 SDL_SetRenderDrawColor(ren, 203, 188, 129, 255);
@@ -112,7 +113,10 @@ void Gamestate::render()
             SDL_RenderFillRect(ren, &tile);
         }
     }
+
     entityManager.renderEntities(ren);
+    SDL_SetRenderDrawColor(ren, 100, 100, 100, 255);
+    // SDL_RenderFillRect(ren, &menu);
     SDL_RenderPresent(ren);
 }
 
@@ -135,12 +139,13 @@ void Gamestate::handleEvents()
     {
         switch (e.type)
         {
+            // if close window is pressed, end game
         case SDL_QUIT:
             running = false;
             break;
 
         case SDL_KEYUP:
-        {
+        { // if esc is pressed, end game
             auto key = e.key.keysym.scancode;
             if (key == SDL_SCANCODE_ESCAPE)
             {
@@ -167,6 +172,7 @@ void Gamestate::handleEvents()
         }
         case SDL_MOUSEBUTTONUP:
         {
+            // places X or O at nearest rectangle
             if (e.button.button == SDL_BUTTON_LEFT)
             {
                 dragging = false;
@@ -180,13 +186,13 @@ void Gamestate::handleEvents()
                 if (lock)
                 {
                     entityManager.lockEntities(entityID, playerX, playerO);
-                    // entityManager.
                 }
             }
             break;
         }
         case SDL_MOUSEMOTION:
         {
+            // moves tile with player mouse
             if (dragging)
             {
                 SDL_Rect playerRect = entityManager.getRectByID(entityID);
@@ -215,9 +221,14 @@ void Gamestate::setIcon(const char *fileLocation)
     }
 }
 
+// random generates who starts
 bool Gamestate::startRandom()
 {
     std::srand(std::time(0));
     int randomNumber = std::rand() % 2;
     return randomNumber;
+}
+
+void Gamestate::gameMenu()
+{
 }

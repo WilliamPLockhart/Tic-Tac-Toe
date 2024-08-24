@@ -43,7 +43,7 @@ void Entity::renderEntities(SDL_Renderer *ren)
     }
 }
 
-//finds nearers to grid to snap to
+// finds nearers to grid to snap to
 SDL_Rect *Entity::getNearestRect(int mouseX, int mouseY, int &ID)
 {
     for (auto E : EntityList)

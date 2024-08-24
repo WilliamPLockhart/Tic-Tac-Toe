@@ -18,6 +18,7 @@ public:
     static int windowWidth;
     static int windowHeight;
     bool startRandom();
+    void gameMenu();
 
 private:
     static Entity::turnType gameWon;
@@ -29,6 +30,7 @@ private:
     SDL_Event e;
     bool dragging = false;
     int mouseX, mouseY, offsetY, offsetX;
+    const SDL_Rect menu = {0, 0, windowWidth, windowHeight};
 
     // player and entities
     int entityID = 0;
