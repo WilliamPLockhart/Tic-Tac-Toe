@@ -12,6 +12,7 @@ Entity::turnType Gamestate::board[3][3] = {Entity::turnType::empty};
 
 Gamestate::Gamestate()
 {
+
     int length = windowHeight / 3;
     tile = {0, 0, length, length};
     for (int i = 0; i < 3; ++i)
@@ -47,6 +48,7 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
             std::cout << "Renderer Created!..." << std::endl;
         }
         running = true;
+        entityManager.addEntity(ren, restartRect, 1);
     }
 
     // audio
@@ -74,13 +76,22 @@ void Gamestate::init(const char *title, int xpos, int ypos, int width, int heigh
 // handles game logic
 void Gamestate::Update()
 {
+    Uint32 currentTime = SDL_GetTicks();
     if (playerO == 15)
     {
+        r = 100, g = 100, b = 100;
+        winStartTime = SDL_GetTicks();
         gameWon = Entity::O;
     }
     else if (playerX == 15)
     {
+        r = 100, g = 0, b = 0;
+        winStartTime = SDL_GetTicks();
         gameWon = Entity::X;
+    }
+    if (gameWon != Entity::empty && currentTime - winStartTime > WIN_DISPLAY_TIME)
+    {
+        newGame();
     }
 }
 
@@ -113,10 +124,13 @@ void Gamestate::render()
             SDL_RenderFillRect(ren, &tile);
         }
     }
-
     entityManager.renderEntities(ren);
     SDL_SetRenderDrawColor(ren, 100, 100, 100, 255);
-    // SDL_RenderFillRect(ren, &menu);
+    SDL_Rect fillRect = {0, 0, windowWidth, windowHeight};
+    if (gameWon != Entity::empty)
+    {
+        SDL_RenderFillRect(ren, &fillRect);
+    }
     SDL_RenderPresent(ren);
 }
 
@@ -152,6 +166,11 @@ void Gamestate::handleEvents()
                 running = false;
                 break;
             }
+            else if (key == SDL_SCANCODE_P)
+            {
+                newGame();
+            }
+            break;
         }
         case SDL_MOUSEBUTTONDOWN:
         {
@@ -159,13 +178,20 @@ void Gamestate::handleEvents()
             if (e.button.button == SDL_BUTTON_LEFT)
             {
 
-                SDL_GetMouseState(&mouseX, &mouseY);
-                SDL_Rect *playerRect = entityManager.getNearestRect(mouseX, mouseY, entityID);
+                SDL_GetMouseState(&mouseCords.mouseX, &mouseCords.mouseY);
+                SDL_Rect *playerRect = entityManager.getNearestRect(mouseCords.mouseX, mouseCords.mouseY, entityID);
                 if (playerRect)
                 {
-                    offsetX = mouseX - playerRect->x;
-                    offsetY = mouseY - playerRect->y;
+                    mouseCords.offsetX = mouseCords.mouseX - playerRect->x;
+                    mouseCords.offsetY = mouseCords.mouseY - playerRect->y;
                     dragging = true;
+
+                    if ((playerRect->x == restartRect.x) && (playerRect->y == restartRect.y) && (playerRect->h == restartRect.h) && (playerRect->w == restartRect.w))
+                    {
+                        dragging = false;
+                        newGame();
+                        restarted = true;
+                    }
                 }
             }
             break;
@@ -175,10 +201,16 @@ void Gamestate::handleEvents()
             // places X or O at nearest rectangle
             if (e.button.button == SDL_BUTTON_LEFT)
             {
+                // ignore
+                if (restarted == true)
+                {
+                    restarted = false;
+                    break;
+                }
                 dragging = false;
                 int newX, newY;
                 bool lock = false;
-                lock = entityManager.SnapToGrid(mouseX, mouseY, tile, newX, newY, board, ren);
+                lock = entityManager.SnapToGrid(mouseCords.mouseX, mouseCords.mouseY, tile, newX, newY, board, ren);
                 SDL_Rect playerRect = entityManager.getRectByID(entityID);
                 playerRect.x = newX;
                 playerRect.y = newY;
@@ -196,8 +228,8 @@ void Gamestate::handleEvents()
             if (dragging)
             {
                 SDL_Rect playerRect = entityManager.getRectByID(entityID);
-                SDL_GetMouseState(&mouseX, &mouseY);
-                SDL_Rect temp = {mouseX - offsetX, mouseY - offsetY, playerRect.w, playerRect.h};
+                SDL_GetMouseState(&mouseCords.mouseX, &mouseCords.mouseY);
+                SDL_Rect temp = {mouseCords.mouseX - mouseCords.offsetX, mouseCords.mouseY - mouseCords.offsetY, playerRect.w, playerRect.h};
                 entityManager.setPlayerRect(temp, entityID);
             }
         }
@@ -229,6 +261,29 @@ bool Gamestate::startRandom()
     return randomNumber;
 }
 
-void Gamestate::gameMenu()
+void Gamestate::newGame()
 {
+    std::cout << "game restarted!..." << std::endl;
+    // resets values
+    entityID = 0;
+    playerX = 0;
+    playerO = 0;
+    gameWon = Entity::empty;
+    winStartTime = 0;
+    restarted = false;
+    dragging = false;
+
+    // sets board to empty
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            board[i][j] = Entity::turnType::empty;
+        }
+    }
+    // resets entityManager
+    entityManager.clear();
+    entityManager.setTurn(startRandom());
+    entityManager.addEntity(ren, {700, 8, 240, 240});
+    entityManager.addEntity(ren, restartRect, 1);
 }

@@ -5,10 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
+#include <memory>
 struct EntityInfo
 {
-    SDL_Texture *entityTexture;
+    std::shared_ptr<SDL_Texture> entityTexture;
     SDL_Rect entityRect;
     int id;
 };
@@ -16,13 +16,14 @@ struct EntityInfo
 class Entity
 {
 public:
+    Entity();
     enum turnType
     {
         empty = 2,
         X = 1,
         O = 0
     };
-    void addEntity(SDL_Renderer *ren, SDL_Rect rect = {0, 0, 0, 0});
+    void addEntity(SDL_Renderer *ren, SDL_Rect rect = {0, 0, 0, 0}, bool restart = 0);
     void renderEntities(SDL_Renderer *ren);
     SDL_Rect *getNearestRect(int mouseX, int mouseY, int &ID);
     SDL_Rect getRectByID(int ID);
@@ -33,6 +34,7 @@ public:
     void setTurn(int t);
     void lockEntities(int ID, int &playerX, int &playerO);
     int addPoints();
+    void clear();
 
 private:
     std::vector<EntityInfo> lockedEntityList;

@@ -1,5 +1,10 @@
 #include <iostream>
 #include "back/gamestate.hpp"
+void *operator new(size_t size)
+{
+    std::cout << "allocating " << size << "bytes\n";
+    return malloc(size);
+}
 
 static Gamestate *game = nullptr;
 
@@ -27,6 +32,7 @@ int main(int argc, char **args)
             SDL_Delay(frameDelay - frameTime);
         }
     }
+
     // end of main loop
     game->cleanGame();
     return 0;

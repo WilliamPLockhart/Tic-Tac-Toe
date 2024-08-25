@@ -1,33 +1,63 @@
 #include "Entity.hpp"
 
+// creates restart button on initialization
+Entity::Entity()
+{
+}
+
 // creates playerText
-void Entity::addEntity(SDL_Renderer *ren, SDL_Rect rect)
+void Entity::addEntity(SDL_Renderer *ren, SDL_Rect rect, bool restart)
 {
     EntityInfo E;
-    SDL_Surface *tempSurface;
+    std::unique_ptr<SDL_Surface, void (*)(SDL_Surface *)> tempSurface(nullptr, SDL_FreeSurface);
 
-    if (turn == X)
+    if (!restart)
     {
-        tempSurface = IMG_Load("assets/X.png");
-        turn = O;
+        if (turn == X)
+        {
+            tempSurface.reset(IMG_Load("assets/X.png"));
+            turn = O;
+        }
+        else
+        {
+            tempSurface.reset(IMG_Load("assets/O.png"));
+            rect.x += 340;
+            turn = X;
+        }
     }
     else
     {
-        tempSurface = IMG_Load("assets/O.png");
-        rect.x += 340;
-        turn = X;
-    }
-    if (!tempSurface)
-    {
-        std::cout << "failure" << std::endl;
+        tempSurface.reset(IMG_Load("assets/restartButton.png"));
+
+        if (!tempSurface)
+        {
+            std::cout << "Failed to load image: " << IMG_GetError() << std::endl;
+            return;
+        }
+
+        // Create and manage texture with smart pointer
+        std::shared_ptr<SDL_Texture> tex(SDL_CreateTextureFromSurface(ren, tempSurface.get()), SDL_DestroyTexture);
+
+        E.entityTexture = tex;
+        E.entityRect = rect;
+        E.id = lockedEntityList.size();
+        lockedEntityList.push_back(E);
+        return;
     }
 
-    SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, tempSurface);
+    if (!tempSurface)
+    {
+        std::cout << "Failed to load image: " << IMG_GetError() << std::endl;
+        return;
+    }
+
+    // Create and manage texture with smart pointer
+    std::shared_ptr<SDL_Texture> tex(SDL_CreateTextureFromSurface(ren, tempSurface.get()), SDL_DestroyTexture);
+
     E.entityTexture = tex;
     E.entityRect = rect;
     E.id = EntityList.size();
     EntityList.push_back(E);
-    SDL_FreeSurface(tempSurface);
 }
 
 // clears memory and renders each entity
@@ -35,11 +65,11 @@ void Entity::renderEntities(SDL_Renderer *ren)
 {
     for (auto E : EntityList)
     {
-        SDL_RenderCopy(ren, E.entityTexture, NULL, &E.entityRect);
+        SDL_RenderCopy(ren, E.entityTexture.get(), NULL, &E.entityRect);
     }
     for (auto E : lockedEntityList)
     {
-        SDL_RenderCopy(ren, E.entityTexture, NULL, &E.entityRect);
+        SDL_RenderCopy(ren, E.entityTexture.get(), NULL, &E.entityRect);
     }
 }
 
@@ -58,6 +88,14 @@ SDL_Rect *Entity::getNearestRect(int mouseX, int mouseY, int &ID)
             ID = E.id;
             return &tempRect;
         }
+    }
+    EntityInfo E = lockedEntityList.at(0);
+    SDL_Rect &tempRect = E.entityRect;
+    int tempRectX = tempRect.x;
+    int tempRectY = tempRect.y;
+    if (((mouseX >= tempRectX) && (mouseX <= tempRectX + tempRect.w)) && (mouseY >= tempRectY && mouseY <= tempRectY + tempRect.h))
+    {
+        return &tempRect;
     }
     return nullptr;
 }
@@ -152,4 +190,10 @@ void Entity::setTurn(int t)
     {
         turn = O;
     }
+}
+
+void Entity::clear()
+{
+    EntityList.clear();
+    lockedEntityList.clear();
 }
