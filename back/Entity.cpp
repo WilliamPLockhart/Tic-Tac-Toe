@@ -1,6 +1,5 @@
 #include "Entity.hpp"
 
-// creates restart button on initialization
 Entity::Entity()
 {
 }
