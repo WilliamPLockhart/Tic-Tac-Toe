@@ -1,54 +1,27 @@
 #pragma once
-#include "Entity.hpp"
-#include <cstdlib>
-#include <ctime>
-
+#include "events.hpp"
+#include "window.hpp"
 class Gamestate
 {
 public:
     Gamestate();
-    void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen);
-    void Update();
-    void handleEvents();
+    bool getRunning() { return m_gameRunning; }
     void render();
+    void playGame();
+    void update();
     void cleanGame();
-    bool isRunning() { return running; }
-    static SDL_Surface *icon;
-    void setIcon(const char *fileLocation);
-    static int windowWidth;
-    static int windowHeight;
-    bool startRandom();
+    void setExitFlag(Events::buttonType &exitFlag) { m_eventOBJ->setExitFlag(exitFlag); }
     void newGame();
+    void place();
+    void checkWon();
 
 private:
-    struct mouseInfo
-    {
-        int mouseX, mouseY, offsetY, offsetX;
-    };
-    static Entity::turnType gameWon;
-    static SDL_Window *win;
-    static SDL_Renderer *ren;
-    static bool running;
-    Entity entityManager;
-
-    // time
-    Uint32 winStartTime = 0;
-    const Uint32 WIN_DISPLAY_TIME = 3000;
-
-    // gameWon
-    int r, g, b;
-    SDL_Rect fillRect = {0, 0, windowWidth, windowHeight};
-
-    // inputs
-    SDL_Event e;
-    bool dragging = false;
-    mouseInfo mouseCords;
-    // player and entities
-
-    bool restarted = false;
-    SDL_Rect restartRect = {800, 400, 300, 300};
-    int entityID = 0;
-    int playerX = 0;
-    int playerO = 0;
-    static Entity::turnType board[3][3];
+    playerType m_board[3][3];
+    std::unique_ptr<Window> m_winOBJ;
+    std::unique_ptr<Events> m_eventOBJ;
+    playerType m_winner = empty;
+    bool m_gameRunning;
+    Events::buttonType m_exitFlag = Events::buttonType::nothingNew;
+    std::shared_ptr<std::vector<std::shared_ptr<entityInfo>>> m_entities;
+    playerType m_playerMove;
 };
